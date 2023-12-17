@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from typing import Optional
 
 from PyQt5.QtWidgets import QApplication, QWidget
 
@@ -7,20 +8,26 @@ from ._amnon_main_window import AmnonMainWindow, ElementId
 from .amnon_button import AmnonButton
 from .amnon_label import AmnonLabel
 from .amnon_text_box import AmnonTextBox
+from .layouts import Position, Size
+from . import colors
 
 
 class AmnonApp(QApplication):
     """
     Wrapping pyQT5 API
     """
-
-    def __init__(self, name: str):
+    DEFAULT_HEIGHT = 1000
+    DEFAULT_WIDTH = 800
+    DEFAULT_NAME = 'App'
+    
+    def __init__(self, name: str = DEFAULT_NAME, height: Optional[int] = DEFAULT_HEIGHT, width: Optional[int] = DEFAULT_WIDTH, 
+                 background_color: Optional[str] = colors.BLACK:
         """
         Initiating the app
         :param name: the app's name, will be the title of the main window
         """
         super().__init__([])
-        self._main_window = AmnonMainWindow(name)
+        self._main_window = AmnonMainWindow(name, height=height, width=width, background_color=background_color)
 
     @property
     def window_width(self) -> int:

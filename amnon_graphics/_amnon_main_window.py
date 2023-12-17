@@ -13,24 +13,24 @@ from . import layouts
 from .amnon_button import AmnonButton
 from .amnon_label import AmnonLabel
 from .amnon_text_box import AmnonTextBox
+from .layouts import Position, Size
+from . import colors
 
 ElementId = str
 
 
 class AmnonMainWindow(QMainWindow):
     WIDGET_ID_PROPERTY = 'id'
-    DEFAULT_NAME = 'App'
-    DEFAULT_HEIGHT = 1000
-    DEFAULT_WIDTH = 800
     """
     Wrapping PyQT5 main window object.
     manages the main window of the app
     """
 
-    def __init__(self, name: str = DEFAULT_NAME, height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
+    def __init__(self, name: str, height: int, width: int, background_color):
         super().__init__()
         self.setWindowTitle(name)
         self.setGeometry(0, 0, height, width)
+        self.setStyleSheet(f"background-color: {background_color};")
         self._add_element_functions = []
         self._labels = []
         self._buttons = []
@@ -39,8 +39,9 @@ class AmnonMainWindow(QMainWindow):
     def _add_button(self, button: AmnonButton, uuid: Optional[str]) -> QPushButton:
         q_button = QPushButton(button.text, self)
         q_button.setGeometry(button.x_pos, button.y_pos, button.width, button.height)
-        q_button.clicked.connect(button.on_click)
+        q_button.clicked.connect(partial(button.on_click, *button.on_click_params))
         q_button.setProperty(self.WIDGET_ID_PROPERTY, uuid or str(uuid4()))
+        q_button.setStyleSheet(f"background-color: {button.background_color}")
         if button.image_path:
             q_button.setIcon(QIcon(str(button.image_path)))
             q_button.setIconSize(QSize(button.width, button.height - 20))
@@ -56,10 +57,10 @@ class AmnonMainWindow(QMainWindow):
     def _add_label(self, label: AmnonLabel, uuid: Optional[str] = None) -> QLabel:
         q_label = QLabel(label.text, self)
         q_label.setGeometry(label.x_pos, label.y_pos, label.width, label.height)
-        if label.text_color:
-            q_label.setStyleSheet(f'color: {label.text_color};')
+        q_label.setStyleSheet(f'color: {label.text_color};')
+        q_label.setStyleSheet(f"background-color: {label.background_color}")
         q_label.setAlignment(Qt.AlignCenter)
-        q_label.setFont(QFont("Arial", 12))
+        q_label.setFont(QFont("Arial", label.font_size))
         if label.image_path:
             pixmap = QPixmap(str(label.image_path))
             q_label.setScaledContents(True)

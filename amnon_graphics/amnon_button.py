@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Any, List
 
 from .layouts import Position, Size
-
+from . import colors
 
 @dataclass
 class AmnonButton:
@@ -11,7 +11,9 @@ class AmnonButton:
     position: Position
     size: Size
     on_click: callable
+    on_click_params: List[Any] = field(default_factory=list)
     text: Optional[str] = None
+    background_color: str = colors.GRAY
     image_path: Optional[Path] = None
 
     @property
@@ -33,7 +35,21 @@ class AmnonButton:
     @property
     def height(self):
         return self.size.height
+    
+    @height.setter
+    def height(self, value):
+        if value > 0:
+            self.size.height = value
+        else:
+            raise ValueError(f"invalid button height: {value}")
 
     @property
     def width(self):
         return self.size.width
+
+    @width.setter
+    def width(self, value):
+        if value > 0:
+            self.size.width = value
+        else:
+            raise ValueError(f"invalid button width: {value}")

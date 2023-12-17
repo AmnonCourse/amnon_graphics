@@ -3,25 +3,18 @@ from pathlib import Path
 from typing import Optional
 
 from .layouts import Position, Size
-
+from . import colors
 
 @dataclass
 class AmnonLabel:
     """A class containing all the information needed to create a label"""
-    BLACK = 'black'
-    WHITE = 'white'
-    RED = 'red'
-    BLUE = 'blue'
-    GREEN = 'green'
-    YELLOW = 'yellow'
-    MAGENTA = 'magenta'
-    CYAN = 'cyan'
-
     position: Position
     size: Size
     text: Optional[str] = None
-    text_color: Optional[str] = None
+    text_color: Optional[str] = colors.WHITE
+    background_color: str = colors.BLUE
     image_path: Optional[Path] = None
+    font_size: int = 12
 
     @property
     def x_pos(self):
