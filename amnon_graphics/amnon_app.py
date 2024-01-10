@@ -21,7 +21,7 @@ class AmnonApp(QApplication):
     DEFAULT_NAME = 'App'
     
     def __init__(self, name: str = DEFAULT_NAME, height: Optional[int] = DEFAULT_HEIGHT, width: Optional[int] = DEFAULT_WIDTH, 
-                 background_color: Optional[str] = colors.BLACK:
+                 background_color: Optional[str] = colors.BLACK):
         """
         Initiating the app
         :param name: the app's name, will be the title of the main window
