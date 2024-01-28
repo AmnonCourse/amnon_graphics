@@ -1,15 +1,15 @@
-from inspect import signature
 import sys
+from inspect import signature
 from pathlib import Path
 from typing import Optional, Union
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLineEdit
 
+from . import colors
 from ._amnon_main_window import AmnonMainWindow, ElementId
 from .amnon_button import AmnonButton
 from .amnon_label import AmnonLabel
 from .amnon_text_box import AmnonTextBox
-from . import colors
 from .colors import RGB
 
 
@@ -20,8 +20,9 @@ class AmnonApp(QApplication):
     DEFAULT_HEIGHT = 1000
     DEFAULT_WIDTH = 800
     DEFAULT_NAME = 'App'
-    
-    def __init__(self, name: str = DEFAULT_NAME, height: Optional[int] = DEFAULT_HEIGHT, width: Optional[int] = DEFAULT_WIDTH,
+
+    def __init__(self, name: str = DEFAULT_NAME, height: Optional[int] = DEFAULT_HEIGHT,
+                 width: Optional[int] = DEFAULT_WIDTH,
                  background_color: Union[str, RGB] = colors.BLACK, background_image: Optional[Path] = None):
         """
         Initiating the app
@@ -68,7 +69,8 @@ class AmnonApp(QApplication):
 
     def add_textbox(self, text_box: AmnonTextBox) -> ElementId:
         """Adds a textbox to the app, that triggers a function whenever its content changes"""
-        expected_params_len = len(signature(text_box.on_change).parameters) - 1 # remove one because `uuid` gets added automatically
+        expected_params_len = len(
+            signature(text_box.on_change).parameters) - 1  # remove one because `uuid` gets added automatically
         num_of_supplied_params = len(text_box.on_change_params)
         if expected_params_len != num_of_supplied_params:
             raise ValueError(f'expected {expected_params_len} `on_change_params` but got {num_of_supplied_params}\n'
@@ -78,7 +80,6 @@ class AmnonApp(QApplication):
         if self._is_running:
             return self._main_window.add_textbox(text_box)
         return self._main_window.prepare_text_box(text_box)
-
 
     def _get_element_by_id(self, widget_id: ElementId) -> QWidget:
         """Get an element according to the given element-id."""

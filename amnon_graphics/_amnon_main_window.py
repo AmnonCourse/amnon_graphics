@@ -9,11 +9,11 @@ from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap, QIcon, QFont
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QWidget, QLineEdit
 
+from . import colors
 from . import layouts
 from .amnon_button import AmnonButton
 from .amnon_label import AmnonLabel
 from .amnon_text_box import AmnonTextBox
-from . import colors
 
 ElementId = str
 

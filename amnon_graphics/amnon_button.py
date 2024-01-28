@@ -2,9 +2,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional, Any, List, Union
 
+from . import colors
 from .colors import RGB
 from .layouts import Position, Size
-from . import colors
 
 
 @dataclass
