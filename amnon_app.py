@@ -22,14 +22,21 @@ class AmnonApp(QApplication):
     DEFAULT_NAME = 'App'
     
     def __init__(self, name: str = DEFAULT_NAME, height: Optional[int] = DEFAULT_HEIGHT, width: Optional[int] = DEFAULT_WIDTH,
-                 background_color: Union[str, RGB] = colors.BLACK):
+                 background_color: Union[str, RGB] = colors.BLACK, background_image: Optional[Path] = None):
         """
         Initiating the app
         :param name: the app's name, will be the title of the main window
+        :param height: the height of the window
+        :param width: the width of the window
+        :param background_color: the background color of the window
+        :param background_image: A path to an image file. If supplied, overrides the background color and displays
+            the image in the background
         """
         super().__init__([])
         self._is_running = False
         self._main_window = AmnonMainWindow(name, height=height, width=width, background_color=background_color)
+        if background_image:
+            self._main_window.set_background_image(background_image)
 
     @property
     def window_width(self) -> int:
@@ -72,13 +79,6 @@ class AmnonApp(QApplication):
             return self._main_window.add_textbox(text_box)
         return self._main_window.prepare_text_box(text_box)
 
-    def set_background_image(self, background_image_path: Path):
-        """
-        Sets the background image of the apps.
-        This method adds a label in the size of the window, and ensures that it is created first
-        so that it appears in the background.
-        """
-        self._main_window.set_background_image(background_image_path)
 
     def _get_element_by_id(self, widget_id: ElementId) -> QWidget:
         """Get an element according to the given element-id."""
