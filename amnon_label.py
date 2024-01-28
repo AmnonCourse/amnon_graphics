@@ -1,18 +1,24 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
+from .colors import RGB
 from .layouts import Position, Size
 from . import colors
 
+
 @dataclass
 class AmnonLabel:
-    """A class containing all the information needed to create a label"""
+    """
+    A label is used to display text or an image on the app.
+    To display text use the `text` attribute
+    To display an image use the `image_path` attribute
+    """
     position: Position
     size: Size
     text: Optional[str] = None
-    text_color: Optional[str] = colors.WHITE
-    background_color: str = colors.BLUE
+    text_color: Union[str, RGB] = colors.WHITE
+    background_color: Union[str, RGB] = colors.BLUE
     image_path: Optional[Path] = None
     font_size: int = 12
 

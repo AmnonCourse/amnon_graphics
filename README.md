@@ -12,6 +12,7 @@ configure it according to your needs and run it with the method `run`.
 
 `add_button` - Receives an `AmnonButton` object and adds it to the app.\
 `add_label` - Receives an `AmnonLabel` object and adds it to the app.\
+`set_background_image` - Define a background image for the app.\
 `run` - Runs the app
 
 ## AmnonButton
@@ -41,7 +42,7 @@ or pictures on the application.
 ## Example Usage:
 
 ```python
-from spotifish_graphics import AmnonApp, AmnonButton, layouts
+from amnon_graphics import AmnonApp, AmnonButton, layouts
 
 
 def on_click():

@@ -13,7 +13,6 @@ from . import layouts
 from .amnon_button import AmnonButton
 from .amnon_label import AmnonLabel
 from .amnon_text_box import AmnonTextBox
-from .layouts import Position, Size
 from . import colors
 
 ElementId = str
@@ -29,7 +28,7 @@ class AmnonMainWindow(QMainWindow):
     def __init__(self, name: str, height: int, width: int, background_color):
         super().__init__()
         self.setWindowTitle(name)
-        self.setGeometry(0, 0, height, width)
+        self.setGeometry(0, 0, width, height)
         self.setStyleSheet(f"background-color: {background_color};")
         self._add_element_functions = []
         self._labels = []
@@ -41,24 +40,43 @@ class AmnonMainWindow(QMainWindow):
         q_button.setGeometry(button.x_pos, button.y_pos, button.width, button.height)
         q_button.clicked.connect(partial(button.on_click, *button.on_click_params))
         q_button.setProperty(self.WIDGET_ID_PROPERTY, uuid or str(uuid4()))
-        q_button.setStyleSheet(f"background-color: {button.background_color}")
+
+        border_color = colors.GRAY if button.background_color != colors.GRAY else colors.WHITE
+        q_button.setStyleSheet(
+            "QPushButton"
+            "{"
+            f"background-color: {button.background_color};"
+            "border-radius: 3px;"
+            "}"
+            "QPushButton:pressed"
+            "{"
+            f"border: 1px solid {border_color};"
+            "}"
+        )
         if button.image_path:
             q_button.setIcon(QIcon(str(button.image_path)))
             q_button.setIconSize(QSize(button.width, button.height - 20))
         self._buttons.append(q_button)
         return q_button
 
-    def add_button(self, amnon_button: AmnonButton) -> ElementId:
+    def prepare_button(self, amnon_button: AmnonButton) -> ElementId:
         """Add the given button to the list of elements to be added later"""
         uuid = str(uuid4())
         self._add_element_functions.append(partial(self._add_button, amnon_button, uuid))
+        return uuid
+
+    def add_button(self, amnon_button: AmnonButton) -> ElementId:
+        uuid = str(uuid4())
+        new_button = self._add_button(amnon_button, uuid)
+        new_button.show()
         return uuid
 
     def _add_label(self, label: AmnonLabel, uuid: Optional[str] = None) -> QLabel:
         q_label = QLabel(label.text, self)
         q_label.setGeometry(label.x_pos, label.y_pos, label.width, label.height)
         q_label.setStyleSheet(f'color: {label.text_color};')
-        q_label.setStyleSheet(f"background-color: {label.background_color}")
+        q_label.setStyleSheet(f"background-color: {label.background_color};"
+                              f"border-radius: 3px")
         q_label.setAlignment(Qt.AlignCenter)
         q_label.setFont(QFont("Arial", label.font_size))
         if label.image_path:
@@ -70,27 +88,43 @@ class AmnonMainWindow(QMainWindow):
         self._labels.append(q_label)
         return q_label
 
-    def add_label(self, amnon_label: AmnonLabel) -> ElementId:
+    def prepare_label(self, amnon_label: AmnonLabel) -> ElementId:
         """Add the given label to the list of elements to be added later"""
         uuid = str(uuid4())
         self._add_element_functions.append(partial(self._add_label, amnon_label, uuid))
+        return uuid
+
+    def add_label(self, amnon_label: AmnonLabel) -> ElementId:
+        uuid = str(uuid4())
+        new_label = self._add_label(amnon_label, uuid)
+        new_label.show()
         return uuid
 
     def _add_text_box(self, amnon_text_box: AmnonTextBox, uuid: Optional[str] = None) -> QLineEdit:
         q_text_box = QLineEdit(self)
         q_text_box.move(amnon_text_box.x_pos, amnon_text_box.y_pos)
         q_text_box.resize(amnon_text_box.width, amnon_text_box.height)
+        q_text_box.setStyleSheet(f'color: {amnon_text_box.text_color};')
+        q_text_box.setStyleSheet(f"background-color: {amnon_text_box.background_color};"
+                                 f"border-radius: 3px")
 
-        q_text_box.textChanged.connect(amnon_text_box.callback)
+        q_text_box.textChanged.connect(partial(amnon_text_box.on_change, uuid, *amnon_text_box.on_change_params))
         q_text_box.setProperty(self.WIDGET_ID_PROPERTY, uuid or str(uuid4()))
         q_text_box.show()
         self._text_boxes.append(q_text_box)
         return q_text_box
 
+    def prepare_text_box(self, amnon_text_box: AmnonTextBox) -> ElementId:
+        """Add the given text box to the list of elements to be added later"""
+        uuid = str(uuid4())
+        self._add_element_functions.append(partial(self._add_text_box, amnon_text_box, uuid))
+        return uuid
+
     def add_text_box(self, amnon_text_box: AmnonTextBox) -> ElementId:
         """Add the given text-box to the list of elements to be added later"""
         uuid = str(uuid4())
-        self._add_element_functions.append(partial(self._add_text_box, amnon_text_box, uuid))
+        new_text_box = self._add_text_box(amnon_text_box, uuid)
+        new_text_box.show()
         return uuid
 
     def add_elements(self):
